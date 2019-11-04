@@ -7,6 +7,7 @@ from custom_logger import custom_logger
 # init_dir
 log_dir = 'server.log'
 version_control_dir = ''
+real_time_yolo_prediction_dir = ''
 
 # logger_init
 logger = custom_logger(log_dir=log_dir)
@@ -26,7 +27,7 @@ logger.info('commands inititalised')
 
 # defining server properties
 port = 9002
-logger.info(f'port set : {port}')
+logger.info('port set : {}'.format(port))
 
 # starting server and binding it with the IP address of the client
 sock.bind(('',port))
@@ -35,13 +36,14 @@ logger.info('sockey is open for connections')
 
 try:
     logger.debug('Excahnging data between server and client')
+    # flag = True
     while True:
         connection, address = sock.accept()
-        logger.info(f'Connection established: {address}')
+        logger.info('Connection established: {}'.format(address))
 
-        task_to_perform = bytes.decode(connection.recv(1024))
+        task_to_perform = bytes.decode(connection.recv(1024)).strip()
         print(task_to_perform)
-
+        # flag = False
         if task_to_perform.split(' ')[0] == 'record_video':
             logger.info('Activity logged: video_recording')
             height = task_to_perform.split(' ')[1]
@@ -51,15 +53,15 @@ try:
 
         elif task_to_perform == 'real_time_result':
             logger.info('Activity logged: real_time_analysis')
-            # os.system(real_time_yolo_prediction_cmd)
+            os.system(real_time_yolo_prediction_cmd)
 
         elif task_to_perform == 'version_control':
             logger.info('Activity logged: version_control')
             # os.chdir(version_control_dir)
             # os.system(version_control_cmd)
 
-        # else:
-        #     logger.info('command terminated')
+        else:
+            logger.info('command terminated')
 
 except Exception as error:
     logger.error(error)
