@@ -3,8 +3,10 @@ from socket import *
 import os
 import time
 from custom_logger import custom_logger
+from result_display import displaying_results
 
 # init_dir
+text_file = 'output.txt'
 log_dir = 'server.log'
 version_control_dir = ''
 real_time_yolo_prediction_dir = ''
@@ -55,6 +57,19 @@ try:
             logger.info('Activity logged: real_time_analysis')
             os.system(real_time_yolo_prediction_cmd)
 
+        elif task_to_perform == 'show_result':
+            logger.info('Activity logged: displaying result')
+            values = displaying_results(text_file)
+            print(values)
+            connection.send(bytes('realTime_{}_{}_{}_{}'.format(values[0],values[1],values[2],values[3]),'utf-8'))
+            # connection.send(bytes('realTimeResult_','utf-8'))
+            # connection.send(bytes(values[0]+'_','utf-8'))
+            # connection.send(bytes(values[1]+'_','utf-8'))
+            # connection.send(bytes(values[2]+'_','utf-8'))
+            # connection.send(bytes(values[3],'utf-8'))
+
+
+
         elif task_to_perform == 'version_control':
             logger.info('Activity logged: version_control')
             # os.chdir(version_control_dir)
@@ -62,6 +77,7 @@ try:
 
         else:
             logger.info('command terminated')
+
 
 except Exception as error:
     logger.error(error)
